@@ -12,11 +12,13 @@ void setup() {
   pinMode(ledRed, OUTPUT);
 
   pinMode(buzzer, OUTPUT);
+
+  setPassword();
 }
 
 void loop() {
-   Serial.println(readKeypad());
-   delay(200);
+ // Serial.println(readKeypad());
+  
 }
 
 int readKeypad(){
@@ -31,26 +33,8 @@ int readKeypad(){
     } else if(digitalRead(5) == HIGH) {
       return 4;
     }
-    delay(200);
  }
-  
 }
-
-int readKeypadOld(){
-  //set this value the pin number of first keypad
-  int firstPin = 2;
-  //set this value the pin number of last keypad
-  int lastPin = 5;
-
-  while(firstPin <= lastPin){
-    if(digitalRead(firstPin) == HIGH && digitalRead(firstPin) < 10){
-      return firstPin - 1;
-    }
-    firstPin++;    
-    delay(50);
-  }
-}
-
 
 void setPassword(){
 
@@ -59,10 +43,15 @@ void setPassword(){
   while(passwordIndex < 4){
     int pressedKey = readKeypad();
     password += pressedKey;
-    delay(2000);
+    buzzerStep();
     Serial.println(password);
     passwordIndex++;
+    delay(125);
   }
+}
+
+void buzzerStep(){
+  tone(buzzer, 700, 65); 
 }
 
 void buzzerWrong(){
