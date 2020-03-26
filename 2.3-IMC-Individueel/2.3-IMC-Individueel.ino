@@ -1,6 +1,8 @@
 int ledGreen = 6;
 int ledRed = 7;
 
+int buzzer = 8;
+
 String password;
 
 void setup() {
@@ -9,12 +11,11 @@ void setup() {
   pinMode(ledGreen, OUTPUT);
   pinMode(ledRed, OUTPUT);
 
-  digitalWrite(ledGreen, HIGH);
-  digitalWrite(ledRed, HIGH);
+  pinMode(buzzer, OUTPUT);
 
-  password = "";
-
-  setPassword();
+  buzzerWrong();
+  delay(2000);
+  buzzerCorrect();
   
 }
 
@@ -49,4 +50,16 @@ void setPassword(){
     Serial.println(password);
     passwordIndex++;
   }
+}
+
+void buzzerWrong(){
+  tone(buzzer, 300, 65); 
+  delay(150);
+  tone(buzzer, 300, 65);   
+}
+
+void buzzerCorrect(){
+  tone(buzzer, 300, 65); 
+  delay(150);
+  tone(buzzer, 500, 65);  
 }
