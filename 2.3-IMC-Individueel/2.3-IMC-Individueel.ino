@@ -15,17 +15,25 @@ void setup() {
 
   password = getCombination();
   buzzerPasswordSet();
-
-  Serial.println(password);
-  Serial.print("is de password");
 }
 
 void loop() {
   
-  String userInput = "";
+  String userInput = getCombination();
 
-  
-  
+  if(userInput == password){
+    delay(500);
+    buzzerCorrect();
+    digitalWrite(ledGreen, HIGH);
+    delay(1000);
+    digitalWrite(ledGreen, LOW);
+  } else{
+    delay(500);
+    buzzerWrong();
+    digitalWrite(ledRed, HIGH);
+    delay(1000);
+    digitalWrite(ledRed, LOW);
+  }
 }
 
 int readKeypad(){
