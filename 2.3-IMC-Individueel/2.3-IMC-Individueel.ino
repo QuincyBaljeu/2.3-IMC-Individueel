@@ -12,18 +12,31 @@ void setup() {
   pinMode(ledRed, OUTPUT);
 
   pinMode(buzzer, OUTPUT);
-
-  buzzerWrong();
-  delay(2000);
-  buzzerCorrect();
-  
 }
 
 void loop() {
-   
+   Serial.println(readKeypad());
+   delay(200);
 }
 
 int readKeypad(){
+
+ while(true){
+    if(digitalRead(2) == HIGH) {
+      return 1;
+    } else if(digitalRead(3) == HIGH) {
+      return 2;
+    } else if(digitalRead(4) == HIGH) {
+      return 3;
+    } else if(digitalRead(5) == HIGH) {
+      return 4;
+    }
+    delay(200);
+ }
+  
+}
+
+int readKeypadOld(){
   //set this value the pin number of first keypad
   int firstPin = 2;
   //set this value the pin number of last keypad
