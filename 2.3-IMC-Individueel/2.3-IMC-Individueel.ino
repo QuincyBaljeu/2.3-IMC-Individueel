@@ -1,25 +1,23 @@
-const int keysAmount = 4;
-int keys[keysAmount] = {2,3,4,5};
+int buzzer = 8;
+
 
 void setup() {
   Serial.begin(9600);
+  pinMode(buzzer, OUTPUT);
 }
 
 void loop() {
-   Serial.println(readKeypad());
+
 }
 
-int readKeypad(){
-  //set this value the pin number of first keypad
-  int firstPin = 2;
-  //set this value the pin number of last keypad
-  int lastPin = 5;
+void buzzerWrong(){
+  tone(buzzer, 300, 65); 
+  delay(150);
+  tone(buzzer, 300, 65);   
+}
 
-  while(firstPin <= lastPin){
-    if(digitalRead(firstPin) == HIGH){
-      return firstPin - 1;
-    }
-    firstPin++;    
-    delay(50);
-  }
+void buzzerCorrect(){
+  tone(buzzer, 300, 65); 
+  delay(150);
+  tone(buzzer, 500, 65);  
 }
