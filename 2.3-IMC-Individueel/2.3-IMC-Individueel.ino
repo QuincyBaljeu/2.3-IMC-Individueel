@@ -13,11 +13,18 @@ void setup() {
 
   pinMode(buzzer, OUTPUT);
 
-  setPassword();
+  password = getCombination();
+  buzzerPasswordSet();
+
+  Serial.println(password);
+  Serial.print("is de password");
 }
 
 void loop() {
- // Serial.println(readKeypad());
+  
+  String userInput = "";
+
+  
   
 }
 
@@ -36,22 +43,31 @@ int readKeypad(){
  }
 }
 
-void setPassword(){
+String getCombination(){
 
   int passwordIndex = 0;
+  String combination = "";
 
   while(passwordIndex < 4){
     int pressedKey = readKeypad();
-    password += pressedKey;
+    combination += pressedKey;
     buzzerStep();
-    Serial.println(password);
+    //Serial.println(combination);
     passwordIndex++;
     delay(125);
   }
+
+  return combination;
 }
 
 void buzzerStep(){
   tone(buzzer, 700, 65); 
+}
+
+void buzzerPasswordSet(){
+   tone(buzzer, 700, 65); 
+   delay(150);
+   tone(buzzer, 700, 65); 
 }
 
 void buzzerWrong(){
