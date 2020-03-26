@@ -1,12 +1,19 @@
-const int keysAmount = 4;
-int keys[keysAmount] = {2,3,4,5};
+int ledGreen = 6;
+int ledRed = 7;
 
 void setup() {
   Serial.begin(9600);
+
+  pinMode(ledGreen, OUTPUT);
+  pinMode(ledRed, OUTPUT);
+
+  digitalWrite(ledGreen, HIGH);
+  digitalWrite(ledRed, HIGH);
 }
 
 void loop() {
    Serial.println(readKeypad());
+   
 }
 
 int readKeypad(){
