@@ -1,66 +1,118 @@
-int ledGreen = 6;
-int ledRed = 7;
+//Assign pins HW-138
+int key1 = 2;
+int key2 = 3;
+int key3 = 4;
+int key4 = 5;
 
-int buzzer = 8;
+//Assign pins 7 segment display
+int segmentA = 9;
+int segmentB = 10;
+int segmentC = 13;
+int segmentD = 12;
+int segmentE = 11;
+int segmentF = 8;
+int segmentG = 7;
+
+//Assing pins buzzer
+int buzzer = 6;
 
 String password;
 
-void setup() {
+boolean passwordSet;
+boolean passwordGuessed;
+
+void setup() 
+{
   Serial.begin(9600);
 
-  pinMode(ledGreen, OUTPUT);
-  pinMode(ledRed, OUTPUT);
+  passwordSet = false;
+  passwordGuessed = false;
 
-  pinMode(buzzer, OUTPUT);
-
-  password = getCombination();
-  buzzerPasswordSet();
+  pinModeSetup();
+  //Buzz to indicate that arduino is ready
+  buzzerStartup();
 }
 
-void loop() {
-  
-  String userInput = getCombination();
+void loop() 
+{
+  //Checks if user has set a password. if not, sets this password to user input
+  if(passwordSet == false)
+  {
+    password = getCombination();
+    passwordSet = true;
+    buzzerPasswordSet();
+  }
 
-  if(userInput == password){
-    delay(500);
-    buzzerCorrect();
-    digitalWrite(ledGreen, HIGH);
-    delay(1000);
-    digitalWrite(ledGreen, LOW);
-  } else{
-    delay(500);
-    buzzerWrong();
-    digitalWrite(ledRed, HIGH);
-    delay(1000);
-    digitalWrite(ledRed, LOW);
+  //Checks if user has guessed password
+  if(passwordGuessed)
+  {
+    //Clears 7 segment display
+    clearSegments();
+
+    //Displays pressed key on 7 segment display
+    int pressedKey = readKeypad();
+    displaySegments(pressedKey);
+    
+  } else {
+    //Read guessed combination from user
+    String userInput = getCombination();
+
+    //Check if gussed combination is correct
+    if(userInput == password)
+    {
+      delay(500);
+      buzzerCorrect();
+      passwordGuessed = true;
+    } else{
+      delay(500);
+      buzzerWrong();
+    }
   }
 }
 
-int readKeypad(){
+//Sets correct pinmode of pins
+void pinModeSetup()
+{
+  pinMode(segmentA, OUTPUT);  
+  pinMode(segmentB, OUTPUT);  
+  pinMode(segmentC, OUTPUT);  
+  pinMode(segmentD, OUTPUT);  
+  pinMode(segmentE, OUTPUT);  
+  pinMode(segmentF, OUTPUT);  
+  pinMode(segmentG, OUTPUT);  
 
- while(true){
-    if(digitalRead(2) == HIGH) {
+  pinMode(buzzer, OUTPUT);
+}
+
+//Read the pressed key on the HW-138 keypad
+int readKeypad()
+{
+ while(true)
+ {
+    if(isPressed(key1)) {
       return 1;
-    } else if(digitalRead(3) == HIGH) {
+    } else if(isPressed(key2)) {
       return 2;
-    } else if(digitalRead(4) == HIGH) {
+    } else if(isPressed(key3)) {
       return 3;
-    } else if(digitalRead(5) == HIGH) {
+    } else if(isPressed(key4)) {
       return 4;
     }
  }
 }
 
-String getCombination(){
-
+//Return string composed of the 4 guessed numbers
+String getCombination()
+{
   int passwordIndex = 0;
   String combination = "";
 
-  while(passwordIndex < 4){
+  while(passwordIndex < 4)
+  {
     int pressedKey = readKeypad();
+    
     combination += pressedKey;
     buzzerStep();
-    //Serial.println(combination);
     passwordIndex++;
     delay(125);
   }
@@ -68,23 +120,107 @@ String getCombination(){
   return combination;
 }
 
-void buzzerStep(){
-  tone(buzzer, 700, 65); 
+//Check if key given in parameter is pressed
+boolean isPressed(int key)
+{
+  if(digitalRead(key) == HIGH)
+  {
+    return true; 
+  } else {
+    return false;
+  }
 }
 
-void buzzerPasswordSet(){
+//Turns on segments based on parameter
+void displaySegments(int number)
+{
+  switch(number)
+  {
+    case 1:
+      digitalWrite(segmentB, HIGH);
+      digitalWrite(segmentC, HIGH);
+      
+      break;
+    case 2:
+      digitalWrite(segmentA, HIGH);
+      digitalWrite(segmentB, HIGH);
+      digitalWrite(segmentG, HIGH);
+      digitalWrite(segmentE, HIGH);
+      digitalWrite(segmentD, HIGH);
+      
+      break;
+    case 3:
+      digitalWrite(segmentA, HIGH);
+      digitalWrite(segmentB, HIGH);
+      digitalWrite(segmentG, HIGH);
+      digitalWrite(segmentC, HIGH);
+      digitalWrite(segmentD, HIGH);
+      
+      break;
+    case 4:
+      digitalWrite(segmentF, HIGH);
+      digitalWrite(segmentG, HIGH);
+      digitalWrite(segmentB, HIGH);
+      digitalWrite(segmentC, HIGH);
+      
+      break;
+    default:
+      digitalWrite(segmentA, HIGH);
+      digitalWrite(segmentB, HIGH);
+      digitalWrite(segmentC, HIGH);
+      digitalWrite(segmentD, HIGH);
+      digitalWrite(segmentE, HIGH);
+      digitalWrite(segmentF, HIGH);
+      digitalWrite(segmentG, LOW);
+    
+      break;    
+  }
+}
+
+void clearSegments()
+{
+   digitalWrite(segmentA, LOW);
+   digitalWrite(segmentB, LOW);
+   digitalWrite(segmentC, LOW);
+   digitalWrite(segmentD, LOW);
+   digitalWrite(segmentE, LOW);
+   digitalWrite(segmentF, LOW);
+   digitalWrite(segmentG, LOW);
+  
+}
+
+void buzzerStartup()
+{
+    tone(buzzer, 700, 65); 
+    delay(150);
+    tone(buzzer, 500 , 65); 
+    delay(150);
+    tone(buzzer, 300, 65); 
+    delay(150);
+    tone(buzzer, 400, 65); 
+}
+
+void buzzerPasswordSet()
+{
    tone(buzzer, 700, 65); 
    delay(150);
    tone(buzzer, 700, 65); 
 }
 
-void buzzerWrong(){
+void buzzerStep()
+{
+   tone(buzzer, 700, 65); 
+}
+
+void buzzerWrong()
+{
   tone(buzzer, 300, 65); 
   delay(150);
   tone(buzzer, 300, 65);   
 }
 
-void buzzerCorrect(){
+void buzzerCorrect()
+{
   tone(buzzer, 300, 65); 
   delay(150);
   tone(buzzer, 500, 65);  
